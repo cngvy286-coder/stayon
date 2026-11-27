@@ -1,0 +1,9 @@
+node_modules
+.next
+out
+build
+coverage
+package-lock.json
+next-env.d.ts
+# Tài liệu: không tự format (CLAUDE.md, docs chỉ sửa khi được đồng ý; AGENTS.md do Next sinh ra)
+*.md
