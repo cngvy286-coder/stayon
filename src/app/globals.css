@@ -1,0 +1,32 @@
+@import "tailwindcss";
+
+/*
+ * STAYON design tokens.
+ * Brand: calm indigo (focus). Neutrals are slightly indigo-tinted so text is soft, not pure black.
+ * Feature accents use Tailwind's teal / indigo / amber / rose at 50 (background) and 600 (icon).
+ */
+@theme {
+  --font-sans: var(--font-be-vietnam-pro), ui-sans-serif, system-ui, sans-serif;
+
+  --color-brand-50: #eef0ff;
+  --color-brand-100: #e0e4ff;
+  --color-brand-200: #c7cdfe;
+  --color-brand-300: #a5acfc;
+  --color-brand-400: #8186f8;
+  --color-brand-500: #6466f1;
+  --color-brand-600: #5048e5;
+  --color-brand-700: #433bca;
+  --color-brand-800: #3733a3;
+  --color-brand-900: #312f81;
+
+  --color-canvas: #f8f8fc;
+  --color-surface: #ffffff;
+  --color-line: #e6e6f0;
+  --color-ink: #1e1b3a;
+  --color-ink-muted: #5d5a78;
+}
+
+body {
+  background: var(--color-canvas);
+  color: var(--color-ink);
+}
