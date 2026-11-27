@@ -43,6 +43,12 @@ export function LoginForm() {
         error={state.fieldErrors?.password}
         required
       />
+      <Link
+        href="/forgot-password"
+        className="-mt-2 self-end text-sm font-medium text-brand-700 hover:underline"
+      >
+        Quên mật khẩu?
+      </Link>
 
       <Button type="submit" size="lg" disabled={pending} className="mt-2 w-full">
         {pending ? "Đang đăng nhập..." : "Đăng nhập"}

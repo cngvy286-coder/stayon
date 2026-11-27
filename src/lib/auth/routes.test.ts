@@ -11,7 +11,7 @@ describe("getAuthRedirect", () => {
   });
 
   it("lets signed-out users see public and auth pages", () => {
-    for (const path of ["/", "/login", "/register", "/auth/callback"]) {
+    for (const path of ["/", "/login", "/register", "/forgot-password", "/auth/callback"]) {
       expect(getAuthRedirect(path, "", false)).toBeNull();
     }
   });
@@ -20,13 +20,19 @@ describe("getAuthRedirect", () => {
     expect(getAuthRedirect("/dashboards", "", false)).toBeNull();
   });
 
-  it("sends signed-in users away from /login and /register", () => {
+  it("sends signed-in users away from /login, /register and /forgot-password", () => {
     expect(getAuthRedirect("/login", "", true)).toBe("/dashboard");
     expect(getAuthRedirect("/register", "", true)).toBe("/dashboard");
+    expect(getAuthRedirect("/forgot-password", "", true)).toBe("/dashboard");
   });
 
   it("lets signed-in users through to app pages", () => {
     expect(getAuthRedirect("/dashboard", "", true)).toBeNull();
+  });
+
+  it("requires the reset-link session for /reset-password", () => {
+    expect(getAuthRedirect("/reset-password", "", false)).toBe("/login?next=%2Freset-password");
+    expect(getAuthRedirect("/reset-password", "", true)).toBeNull();
   });
 });
 

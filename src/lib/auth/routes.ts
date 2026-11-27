@@ -6,10 +6,12 @@ export const PROTECTED_PREFIXES = [
   "/reminders",
   "/focus",
   "/settings",
+  // Needs the temporary session created by the password-reset email link.
+  "/reset-password",
 ] as const;
 
 /** Pages only for signed-out users. */
-export const AUTH_PAGES = ["/login", "/register"] as const;
+export const AUTH_PAGES = ["/login", "/register", "/forgot-password"] as const;
 
 export const DEFAULT_SIGNED_IN_PATH = "/dashboard";
 

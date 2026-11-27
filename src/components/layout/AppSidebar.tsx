@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
+import { signOut } from "@/app/(auth)/actions";
 import { Icon } from "@/components/ui/Icon";
 
 import { Logo } from "./Logo";
@@ -16,12 +17,12 @@ export function AppSidebar() {
   const pathname = usePathname();
 
   return (
-    <aside className="border-b border-line bg-surface md:sticky md:top-0 md:h-screen md:w-64 md:shrink-0 md:border-r md:border-b-0">
+    <aside className="border-b border-line bg-surface md:sticky md:top-0 md:flex md:h-screen md:w-64 md:shrink-0 md:flex-col md:border-r md:border-b-0">
       <div className="flex h-16 items-center px-4 md:px-6">
         <Logo href="/dashboard" />
       </div>
-      <nav aria-label="Điều hướng chính" className="overflow-x-auto px-2 pb-2 md:px-3">
-        <ul className="flex gap-1 md:flex-col">
+      <nav aria-label="Điều hướng chính" className="overflow-x-auto px-2 pb-2 md:flex-1 md:px-3">
+        <ul className="flex gap-1 md:h-full md:flex-col">
           {APP_NAV_ITEMS.map((item) => {
             if (!item.ready) {
               return (
@@ -58,6 +59,17 @@ export function AppSidebar() {
               </li>
             );
           })}
+          <li className="md:mt-auto md:pb-2">
+            <form action={signOut}>
+              <button
+                type="submit"
+                className={`${itemBase} w-full text-ink-muted transition-colors hover:bg-rose-50 hover:text-rose-700`}
+              >
+                <Icon name="logOut" />
+                Đăng xuất
+              </button>
+            </form>
+          </li>
         </ul>
       </nav>
     </aside>
