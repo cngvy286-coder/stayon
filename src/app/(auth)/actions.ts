@@ -4,6 +4,7 @@ import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 
 import { authErrorMessage } from "@/lib/auth/errors";
+import { safeNextPath } from "@/lib/auth/routes";
 import { createClient } from "@/lib/supabase/server";
 import {
   type FieldErrors,
@@ -38,8 +39,9 @@ export async function signIn(_prev: AuthFormState, formData: FormData): Promise<
     return { status: "error", message: authErrorMessage(error.code), values };
   }
 
+  // Back to the page the user tried to open (validated to stay on this site).
   // redirect() throws, so it must stay outside any try/catch.
-  redirect("/dashboard");
+  redirect(safeNextPath(formData.get("next")?.toString()));
 }
 
 export async function signUp(_prev: AuthFormState, formData: FormData): Promise<AuthFormState> {
