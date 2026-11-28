@@ -26,9 +26,13 @@ const NOT_FOUND = "Không tìm thấy lịch này. Có thể lịch đã bị x�
  * Dates/times are read in the user's timezone (which also verifies the user is signed in).
  */
 async function readEventForm(formData: FormData) {
-  const values = Object.fromEntries(
-    FIELDS.map((field) => [field, String(formData.get(field) ?? "")]),
-  );
+  const values: Record<string, string> = {
+    ...Object.fromEntries(FIELDS.map((field) => [field, String(formData.get(field) ?? "")])),
+    repeat: formData.get("repeat") ? "on" : "",
+    // One checkbox per weekday, all named "repeatDays".
+    repeatDays: formData.getAll("repeatDays").map(String).join(","),
+    repeatUntil: String(formData.get("repeatUntil") ?? ""),
+  };
 
   const parsed = eventFormSchema.safeParse(values);
   if (!parsed.success) {
@@ -41,13 +45,16 @@ async function readEventForm(formData: FormData) {
   }
 
   const timeZone = await getUserTimezone();
-  const { title, date, startTime, endTime, color, note } = parsed.data;
+  const { title, date, startTime, endTime, color, note, repeatDays, repeatUntil } = parsed.data;
   const row = {
     title,
     note,
     color,
     start_at: zonedTimeToUtc(date, parseTimeToMinutes(startTime), timeZone).toISOString(),
     end_at: zonedTimeToUtc(date, parseTimeToMinutes(endTime), timeZone).toISOString(),
+    // null for a one-off event, so turning repeat off clears an existing series.
+    repeat_days: repeatDays,
+    repeat_until: repeatUntil,
   };
   return { ok: true as const, row, values };
 }

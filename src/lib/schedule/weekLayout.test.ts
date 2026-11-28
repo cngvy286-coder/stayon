@@ -17,6 +17,8 @@ function at(day: string, from: string, to: string, toDay = day): CalendarEvent {
     start_at: new Date(`${day}T${from}:00+07:00`).toISOString(),
     end_at: new Date(`${toDay}T${to}:00+07:00`).toISOString(),
     color: "brand",
+    repeat_days: null,
+    repeat_until: null,
   };
 }
 

@@ -1,6 +1,8 @@
 import type { WeekLayout } from "@/lib/schedule/weekLayout";
 import { formatDayMonth, formatMinutes, weekdayLabel } from "@/lib/utils/date";
 
+import { Icon } from "@/components/ui/Icon";
+
 import { EditableEvent } from "./EditableEvent";
 import { EVENT_COLOR_CLASSES } from "./eventColors";
 
@@ -97,7 +99,12 @@ export function WeekGrid({ layout, todayKey, timeZone }: WeekGridProps) {
                     width: `calc(${100 / segment.lanes}% - 4px)`,
                   }}
                 >
-                  <span className="block w-full truncate font-semibold">{segment.event.title}</span>
+                  <span className="flex w-full items-center gap-1 font-semibold">
+                    <span className="truncate">{segment.event.title}</span>
+                    {segment.event.repeat_days && (
+                      <Icon name="repeat" className="size-3 shrink-0 opacity-70" />
+                    )}
+                  </span>
                   <span className="block w-full truncate tabular-nums opacity-80">{time}</span>
                 </EditableEvent>
               );

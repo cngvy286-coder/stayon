@@ -10,6 +10,7 @@ import type { EventFormValues } from "@/lib/schedule/eventFormValues";
 import { EVENT_COLORS, type EventColor } from "@/types/event";
 
 import { EVENT_COLOR_CLASSES } from "./eventColors";
+import { RepeatFields } from "./RepeatFields";
 
 const COLOR_LABELS: Record<EventColor, string> = {
   brand: "Chàm",
@@ -114,6 +115,13 @@ export function EventForm({
         </div>
         {errors?.color && <p className="text-sm text-rose-600">{errors.color}</p>}
       </fieldset>
+
+      <RepeatFields
+        defaultRepeat={values?.repeat}
+        defaultDays={values?.repeatDays}
+        defaultUntil={values?.repeatUntil}
+        errors={{ repeatDays: errors?.repeatDays, repeatUntil: errors?.repeatUntil }}
+      />
 
       <div className="flex flex-col gap-1.5">
         <label htmlFor="note" className="text-sm font-medium">

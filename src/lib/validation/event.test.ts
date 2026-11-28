@@ -27,7 +27,59 @@ function errorsOf(input: Record<string, unknown>) {
 
 describe("eventFormSchema", () => {
   it("accepts valid input, trims the title and turns an empty note into null", () => {
-    expect(eventFormSchema.parse(valid)).toEqual({ ...valid, title: "Toán cao cấp", note: null });
+    expect(eventFormSchema.parse(valid)).toEqual({
+      ...valid,
+      title: "Toán cao cấp",
+      note: null,
+      repeatDays: null,
+      repeatUntil: null,
+    });
+  });
+
+  describe("weekly repeat", () => {
+    const repeating = { ...valid, repeat: "on", repeatDays: "3,1,3", repeatUntil: "" };
+
+    it("stores sorted, unique weekdays and no end date", () => {
+      expect(eventFormSchema.parse(repeating)).toMatchObject({
+        repeatDays: [1, 3],
+        repeatUntil: null,
+      });
+    });
+
+    it("keeps an end date on or after the start date", () => {
+      expect(eventFormSchema.parse({ ...repeating, repeatUntil: "2026-12-31" }).repeatUntil).toBe(
+        "2026-12-31",
+      );
+    });
+
+    it("ignores repeat fields when repeat is off", () => {
+      expect(
+        eventFormSchema.parse({
+          ...valid,
+          repeat: "",
+          repeatDays: "1,3",
+          repeatUntil: "2026-12-31",
+        }),
+      ).toMatchObject({ repeatDays: null, repeatUntil: null });
+    });
+
+    it("requires at least one weekday", () => {
+      expect(errorsOf({ ...repeating, repeatDays: "" })).toEqual({
+        repeatDays: "Chọn ít nhất một thứ để lặp lại.",
+      });
+    });
+
+    it("rejects an end date before the start date", () => {
+      expect(errorsOf({ ...repeating, repeatUntil: "2026-11-27" })).toEqual({
+        repeatUntil: "Ngày kết thúc lặp phải từ ngày bắt đầu trở đi.",
+      });
+    });
+
+    it("rejects weekdays outside 1–7", () => {
+      expect(errorsOf({ ...repeating, repeatDays: "0,8" })).toEqual({
+        repeatDays: "Thứ không hợp lệ.",
+      });
+    });
   });
 
   it("keeps a non-empty note", () => {

@@ -53,6 +53,28 @@ describe("AddEventButton saving", () => {
     expect(formData.get("title")).toBe("Toán");
     expect(formData.get("date")).toBe("2026-11-25");
   });
+
+  it("pre-selects the weekday of the chosen date when repeat is turned on", async () => {
+    createEvent.mockResolvedValue({ status: "success" });
+    const user = userEvent.setup();
+    render(<AddEventButton defaultDate="2026-11-25" />); // a Wednesday
+
+    await user.click(screen.getByRole("button", { name: "Thêm lịch" }));
+    expect(screen.queryByRole("checkbox", { name: "Thứ Tư" })).not.toBeInTheDocument();
+
+    await user.click(screen.getByRole("checkbox", { name: "Lặp lại hàng tuần" }));
+    expect(screen.getByRole("checkbox", { name: "Thứ Tư" })).toBeChecked();
+    expect(screen.getByRole("checkbox", { name: "Thứ Hai" })).not.toBeChecked();
+    expect(screen.getByLabelText("Lặp đến ngày")).toHaveValue("");
+
+    await user.type(screen.getByLabelText("Tên lịch"), "Toán");
+    await user.click(screen.getByRole("button", { name: "Lưu lịch" }));
+
+    await vi.waitFor(() => expect(createEvent).toHaveBeenCalled());
+    const formData = createEvent.mock.calls[0][1] as FormData;
+    expect(formData.get("repeat")).toBe("on");
+    expect(formData.getAll("repeatDays")).toEqual(["3"]);
+  });
 });
 
 describe("AddEventButton", () => {

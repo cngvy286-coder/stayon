@@ -9,6 +9,8 @@ import type { CalendarEvent } from "@/types/event";
  * and RLS in the database limits rows to that user.
  */
 
+const EVENT_COLUMNS = "id, title, note, start_at, end_at, color, repeat_days, repeat_until";
+
 async function requireUser() {
   const supabase = await createClient();
   const { data } = await supabase.auth.getClaims();
@@ -25,18 +27,39 @@ export async function getUserTimezone(): Promise<string> {
   return timeZone && isValidTimeZone(timeZone) ? timeZone : DEFAULT_TIMEZONE;
 }
 
-/** Events that overlap [from, to), oldest first. */
-export async function getEventsBetween(from: Date, to: Date): Promise<CalendarEvent[]> {
+/**
+ * Events that may appear in [from, to):
+ * - one-off events overlapping the range, and
+ * - repeating series that started before `to` and have not ended before `fromDate`.
+ * Repeating series are returned as stored; expand them with expandRecurringEvents.
+ */
+export async function getEventsForRange(
+  from: Date,
+  to: Date,
+  fromDate: string,
+): Promise<CalendarEvent[]> {
   const { supabase } = await requireUser();
-  const { data, error } = await supabase
-    .from("events")
-    .select("id, title, note, start_at, end_at, color")
-    .lt("start_at", to.toISOString())
-    .gt("end_at", from.toISOString())
-    .order("start_at");
 
+  const [oneOff, repeating] = await Promise.all([
+    supabase
+      .from("events")
+      .select(EVENT_COLUMNS)
+      .is("repeat_days", null)
+      .lt("start_at", to.toISOString())
+      .gt("end_at", from.toISOString())
+      .order("start_at"),
+    supabase
+      .from("events")
+      .select(EVENT_COLUMNS)
+      .not("repeat_days", "is", null)
+      .lt("start_at", to.toISOString())
+      .or(`repeat_until.is.null,repeat_until.gte.${fromDate}`)
+      .order("start_at"),
+  ]);
+
+  const error = oneOff.error ?? repeating.error;
   if (error) {
     throw new Error(`Could not load events: ${error.message}`);
   }
-  return (data ?? []) as CalendarEvent[];
+  return [...(oneOff.data ?? []), ...(repeating.data ?? [])] as CalendarEvent[];
 }
