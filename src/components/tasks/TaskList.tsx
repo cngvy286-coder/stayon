@@ -1,3 +1,5 @@
+import { connection } from "next/server";
+
 import { getUserTimezone } from "@/lib/data/events";
 import { getTasks } from "@/lib/data/tasks";
 import { groupTasks } from "@/lib/tasks/sortTasks";
@@ -14,7 +16,9 @@ const GROUP_HINTS = {
 
 /** Loads the user's tasks and shows them in three status groups. */
 export async function TaskList() {
-  // Read the session (request data) before the current time, as Cache Components requires.
+  // Everything below depends on the current time and the signed-in user (Supabase checks token
+  // expiry with Date.now()), so never prerender it — not even during Partial Prefetching.
+  await connection();
   const timeZone = await getUserTimezone();
   const now = new Date();
   const tasks = await getTasks(now);
