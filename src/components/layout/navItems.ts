@@ -10,7 +10,7 @@ export type NavItem = {
 
 export const APP_NAV_ITEMS: NavItem[] = [
   { href: "/dashboard", label: "Tổng quan", icon: "dashboard", ready: true },
-  { href: "/schedule", label: "Thời khóa biểu", icon: "calendar", ready: false },
+  { href: "/schedule", label: "Thời khóa biểu", icon: "calendar", ready: true },
   { href: "/tasks", label: "Công việc", icon: "check", ready: false },
   { href: "/reminders", label: "Nhắc nhở", icon: "bell", ready: false },
   { href: "/focus", label: "Tập trung", icon: "shield", ready: false },
