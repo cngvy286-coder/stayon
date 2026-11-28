@@ -1,10 +1,13 @@
 import { type NextRequest, NextResponse } from "next/server";
 
+import { safeNextPath } from "@/lib/auth/routes";
 import { createClient } from "@/lib/supabase/server";
 
 /**
- * The confirmation link in the sign-up email lands here with ?code=...
- * Exchange it for a session (sets the auth cookies), then send the user into the app.
+ * Links in Supabase emails land here with ?code=... :
+ * - sign-up confirmation  -> /auth/callback                      -> /dashboard
+ * - password reset        -> /auth/callback?next=/reset-password -> /reset-password
+ * Exchange the code for a session (sets the auth cookies), then continue to `next`.
  */
 export async function GET(request: NextRequest) {
   const { searchParams, origin } = request.nextUrl;
@@ -18,7 +21,7 @@ export async function GET(request: NextRequest) {
     const supabase = await createClient();
     const { error } = await supabase.auth.exchangeCodeForSession(code);
     if (!error) {
-      return NextResponse.redirect(`${origin}/dashboard`);
+      return NextResponse.redirect(`${origin}${safeNextPath(searchParams.get("next"))}`);
     }
   }
 

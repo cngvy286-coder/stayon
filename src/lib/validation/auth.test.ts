@@ -1,6 +1,39 @@
 import { describe, expect, it } from "vitest";
 
-import { firstFieldErrors, signInSchema, signUpSchema } from "./auth";
+import {
+  firstFieldErrors,
+  forgotPasswordSchema,
+  resetPasswordSchema,
+  signInSchema,
+  signUpSchema,
+} from "./auth";
+
+describe("forgotPasswordSchema", () => {
+  it("requires a valid email", () => {
+    expect(forgotPasswordSchema.safeParse({ email: "ban@email.com" }).success).toBe(true);
+    expect(forgotPasswordSchema.safeParse({ email: "sai" }).success).toBe(false);
+  });
+});
+
+describe("resetPasswordSchema", () => {
+  it("applies the same password rules as sign-up", () => {
+    const result = resetPasswordSchema.safeParse({ password: "abc", confirmPassword: "abc" });
+    expect(result.success).toBe(false);
+    expect(result.success ? {} : firstFieldErrors(result.error)).toEqual({
+      password: "Mật khẩu cần ít nhất 8 ký tự.",
+    });
+  });
+
+  it("requires matching passwords", () => {
+    const result = resetPasswordSchema.safeParse({
+      password: "matkhau123",
+      confirmPassword: "matkhau124",
+    });
+    expect(result.success ? {} : firstFieldErrors(result.error)).toEqual({
+      confirmPassword: "Mật khẩu nhập lại không khớp.",
+    });
+  });
+});
 
 const validSignUp = {
   displayName: "Minh Anh",

@@ -8,6 +8,8 @@ const MESSAGES: Record<string, string> = {
   user_already_exists: "Email này đã được đăng ký. Hãy đăng nhập.",
   email_exists: "Email này đã được đăng ký. Hãy đăng nhập.",
   weak_password: "Mật khẩu quá yếu. Hãy dùng mật khẩu dài hơn, có cả chữ và số.",
+  same_password: "Mật khẩu mới phải khác mật khẩu cũ.",
+  session_not_found: "Phiên đặt lại mật khẩu đã hết hạn. Hãy yêu cầu link mới.",
   over_email_send_rate_limit: "Đã gửi quá nhiều email. Vui lòng thử lại sau ít phút.",
   over_request_rate_limit: "Bạn thao tác quá nhanh. Vui lòng thử lại sau ít phút.",
   signup_disabled: "Hiện tạm thời không thể đăng ký tài khoản mới.",
