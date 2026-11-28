@@ -1,6 +1,8 @@
 import type { WeekLayout } from "@/lib/schedule/weekLayout";
 import { formatDayMonth, formatMinutes, weekdayLabel } from "@/lib/utils/date";
 
+import { Icon } from "@/components/ui/Icon";
+
 import { EditableEvent } from "./EditableEvent";
 import { EVENT_COLOR_CLASSES } from "./eventColors";
 
@@ -48,6 +50,9 @@ export function WeekAgenda({ layout, todayKey, timeZone }: WeekAgendaProps) {
                         />
                         <span className="w-24 shrink-0 text-ink-muted tabular-nums">{time}</span>
                         <span className="min-w-0 truncate font-medium">{segment.event.title}</span>
+                        {segment.event.repeat_days && (
+                          <Icon name="repeat" className="size-3.5 shrink-0 text-ink-muted" />
+                        )}
                       </EditableEvent>
                     </li>
                   );

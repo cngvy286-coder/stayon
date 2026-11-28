@@ -4,6 +4,7 @@ import { type CSSProperties, type ReactNode, useCallback, useMemo, useState } fr
 
 import { updateEvent } from "@/app/(app)/schedule/actions";
 import { Button } from "@/components/ui/Button";
+import { Icon } from "@/components/ui/Icon";
 import { Modal } from "@/components/ui/Modal";
 import { eventToFormValues } from "@/lib/schedule/eventFormValues";
 import { formatDayMonth } from "@/lib/utils/date";
@@ -36,6 +37,7 @@ export function EditableEvent({
   const close = useCallback(() => setOpen(false), []);
   const { spansDays, ...initialValues } = eventToFormValues(event, timeZone);
   const save = useMemo(() => updateEvent.bind(null, event.id), [event.id]);
+  const repeating = initialValues.repeat === "on";
 
   return (
     <>
@@ -59,7 +61,7 @@ export function EditableEvent({
               chưa sửa được lịch qua nhiều ngày, bạn chỉ có thể xóa lịch này.
             </p>
             <div className="flex justify-between gap-2">
-              <DeleteEventButton eventId={event.id} onDeleted={close} />
+              <DeleteEventButton eventId={event.id} repeating={repeating} onDeleted={close} />
               <Button variant="ghost" onClick={close}>
                 Đóng
               </Button>
@@ -67,6 +69,12 @@ export function EditableEvent({
           </div>
         ) : (
           <div className="flex flex-col gap-4">
+            {repeating && (
+              <p className="flex items-center gap-2 rounded-xl bg-brand-50 px-3 py-2 text-sm text-brand-800">
+                <Icon name="repeat" className="size-4 shrink-0" />
+                Lịch lặp lại: thay đổi sẽ áp dụng cho tất cả các buổi.
+              </p>
+            )}
             <EventForm
               action={save}
               initialValues={initialValues}
@@ -75,7 +83,7 @@ export function EditableEvent({
               onSaved={close}
             />
             <div className="border-t border-line pt-4">
-              <DeleteEventButton eventId={event.id} onDeleted={close} />
+              <DeleteEventButton eventId={event.id} repeating={repeating} onDeleted={close} />
             </div>
           </div>
         )}

@@ -115,6 +115,16 @@ export function weekdayLabel(key: string): string {
   return WEEKDAY_LABELS[keyToUtcDate(key).getUTCDay()];
 }
 
+/** ISO weekday of a date key: 1 = Monday ... 7 = Sunday. */
+export function isoWeekday(key: string): number {
+  return keyToUtcDate(key).getUTCDay() || 7;
+}
+
+/** Short Vietnamese label for an ISO weekday: 1 -> "T2", 7 -> "CN". */
+export function isoWeekdayLabel(isoDay: number): string {
+  return WEEKDAY_LABELS[isoDay % 7];
+}
+
 /** "28/11" */
 export function formatDayMonth(key: string): string {
   const [, m, d] = key.split("-");

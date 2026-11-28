@@ -21,6 +21,8 @@ const event: CalendarEvent = {
   start_at: "2026-11-28T03:00:00.000Z", // 10:00 in Vietnam
   end_at: "2026-11-28T04:30:00.000Z", // 11:30 in Vietnam
   color: "rose",
+  repeat_days: null,
+  repeat_until: null,
 };
 
 function renderEvent(overrides: Partial<CalendarEvent> = {}) {
@@ -114,5 +116,47 @@ describe("EditableEvent", () => {
     expect(screen.getByText(/kéo dài qua nửa đêm/)).toBeInTheDocument();
     expect(screen.queryByLabelText("Tên lịch")).not.toBeInTheDocument();
     expect(screen.getByRole("button", { name: "Xóa lịch" })).toBeInTheDocument();
+  });
+
+  describe("repeating events", () => {
+    const repeating = { repeat_days: [1, 3], repeat_until: null };
+
+    it("shows the series' repeat settings and says edits apply to every occurrence", async () => {
+      const user = renderEvent(repeating);
+
+      await user.click(screen.getByRole("button", { name: "Sửa lịch: Thử lưu lịch" }));
+
+      expect(screen.getByText(/áp dụng cho tất cả các buổi/)).toBeInTheDocument();
+      expect(screen.getByRole("checkbox", { name: "Lặp lại hàng tuần" })).toBeChecked();
+      expect(screen.getByRole("checkbox", { name: "Thứ Hai" })).toBeChecked();
+      expect(screen.getByRole("checkbox", { name: "Thứ Tư" })).toBeChecked();
+      expect(screen.getByRole("checkbox", { name: "Thứ Ba" })).not.toBeChecked();
+    });
+
+    it("deletes the whole series after a series-specific confirmation", async () => {
+      deleteEvent.mockResolvedValue({ ok: true });
+      const user = renderEvent(repeating);
+
+      await user.click(screen.getByRole("button", { name: "Sửa lịch: Thử lưu lịch" }));
+      await user.click(screen.getByRole("button", { name: "Xóa cả chuỗi lịch" }));
+
+      expect(screen.getByText(/Xóa tất cả các buổi của lịch lặp này/)).toBeInTheDocument();
+      await user.click(screen.getByRole("button", { name: "Xóa" }));
+      expect(deleteEvent).toHaveBeenCalledWith(event.id);
+    });
+
+    it("sends the chosen weekdays when saving", async () => {
+      updateEvent.mockResolvedValue({ status: "success" });
+      const user = renderEvent(repeating);
+
+      await user.click(screen.getByRole("button", { name: "Sửa lịch: Thử lưu lịch" }));
+      await user.click(screen.getByRole("checkbox", { name: "Thứ Sáu" }));
+      await user.click(screen.getByRole("button", { name: "Lưu thay đổi" }));
+
+      await vi.waitFor(() => expect(updateEvent).toHaveBeenCalled());
+      const formData = updateEvent.mock.calls[0][2] as FormData;
+      expect(formData.get("repeat")).toBe("on");
+      expect(formData.getAll("repeatDays")).toEqual(["1", "3", "5"]);
+    });
   });
 });

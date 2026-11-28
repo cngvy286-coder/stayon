@@ -1,4 +1,5 @@
-import { getEventsBetween, getUserTimezone } from "@/lib/data/events";
+import { getEventsForRange, getUserTimezone } from "@/lib/data/events";
+import { expandRecurringEvents } from "@/lib/schedule/recurrence";
 import { buildWeekLayout } from "@/lib/schedule/weekLayout";
 import { addDays, isDateKey, startOfDayInZone, startOfWeek, toDateKey } from "@/lib/utils/date";
 
@@ -19,10 +20,13 @@ export async function WeekView({ week }: WeekViewProps) {
   const requested = typeof week === "string" && isDateKey(week) ? week : todayKey;
   const weekStart = startOfWeek(requested);
 
-  const events = await getEventsBetween(
+  const stored = await getEventsForRange(
     startOfDayInZone(weekStart, timeZone),
     startOfDayInZone(addDays(weekStart, 7), timeZone),
+    weekStart,
   );
+  // Repeating series become one event per occurrence in this week.
+  const events = expandRecurringEvents(stored, weekStart, timeZone);
   const layout = buildWeekLayout(events, weekStart, timeZone);
   const isCurrentWeek = weekStart === startOfWeek(todayKey);
 

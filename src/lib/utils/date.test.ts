@@ -6,6 +6,8 @@ import {
   formatWeekRange,
   isDateKey,
   isValidTimeZone,
+  isoWeekday,
+  isoWeekdayLabel,
   minutesOfDay,
   parseTimeToMinutes,
   startOfDayInZone,
@@ -55,6 +57,13 @@ describe("calendar maths on date keys", () => {
     expect(isDateKey("2026-11-28")).toBe(true);
     expect(isDateKey("2026-02-30")).toBe(false);
     expect(isDateKey("28/11/2026")).toBe(false);
+  });
+
+  it("gives ISO weekdays with Monday = 1 and Sunday = 7", () => {
+    expect(isoWeekday("2026-11-23")).toBe(1);
+    expect(isoWeekday("2026-11-29")).toBe(7);
+    expect(isoWeekdayLabel(1)).toBe("T2");
+    expect(isoWeekdayLabel(7)).toBe("CN");
   });
 
   it("labels weekdays in Vietnamese", () => {

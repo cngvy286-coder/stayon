@@ -6,12 +6,17 @@ import { deleteEvent } from "@/app/(app)/schedule/actions";
 import { Alert } from "@/components/ui/Alert";
 import { Button } from "@/components/ui/Button";
 
-/** "Xóa lịch" with an inline two-step confirmation (no browser confirm() dialog). */
+/**
+ * "Xóa lịch" with an inline two-step confirmation (no browser confirm() dialog).
+ * For a repeating event the whole series is deleted, and the wording says so.
+ */
 export function DeleteEventButton({
   eventId,
+  repeating = false,
   onDeleted,
 }: {
   eventId: string;
+  repeating?: boolean;
   onDeleted: () => void;
 }) {
   const [confirming, setConfirming] = useState(false);
@@ -34,7 +39,7 @@ export function DeleteEventButton({
         className="text-rose-700 hover:bg-rose-50 hover:text-rose-800"
         onClick={() => setConfirming(true)}
       >
-        Xóa lịch
+        {repeating ? "Xóa cả chuỗi lịch" : "Xóa lịch"}
       </Button>
     );
   }
@@ -42,7 +47,11 @@ export function DeleteEventButton({
   return (
     <div className="flex w-full flex-col gap-3 rounded-xl border border-rose-200 bg-rose-50 p-3">
       {error && <Alert tone="error">{error}</Alert>}
-      <p className="text-sm font-medium text-rose-800">Xóa lịch này? Không thể hoàn tác.</p>
+      <p className="text-sm font-medium text-rose-800">
+        {repeating
+          ? "Xóa tất cả các buổi của lịch lặp này? Không thể hoàn tác."
+          : "Xóa lịch này? Không thể hoàn tác."}
+      </p>
       <div className="flex justify-end gap-2">
         <Button variant="ghost" onClick={() => setConfirming(false)} disabled={pending}>
           Không

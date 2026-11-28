@@ -13,6 +13,8 @@ const event: CalendarEvent = {
   start_at: "2026-11-28T03:00:00.000Z", // 10:00 in Vietnam
   end_at: "2026-11-28T04:30:00.000Z", // 11:30 in Vietnam
   color: "rose",
+  repeat_days: null,
+  repeat_until: null,
 };
 
 describe("eventToFormValues", () => {
@@ -24,7 +26,30 @@ describe("eventToFormValues", () => {
       endTime: "11:30",
       color: "rose",
       note: "",
+      repeat: "",
+      repeatDays: "",
+      repeatUntil: "",
       spansDays: false,
+    });
+  });
+
+  it("fills a repeating occurrence with the series' first date and its repeat settings", () => {
+    const occurrence = {
+      ...event,
+      // This occurrence is on 07/12, but the series started on 28/11.
+      start_at: "2026-12-07T03:00:00.000Z",
+      end_at: "2026-12-07T04:30:00.000Z",
+      repeat_days: [1, 6],
+      repeat_until: "2026-12-31",
+      series: { start_at: event.start_at, end_at: event.end_at },
+    };
+    expect(eventToFormValues(occurrence, VN)).toMatchObject({
+      date: "2026-11-28",
+      startTime: "10:00",
+      endTime: "11:30",
+      repeat: "on",
+      repeatDays: "1,6",
+      repeatUntil: "2026-12-31",
     });
   });
 
