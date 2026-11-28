@@ -20,8 +20,8 @@ describe("AppSidebar", () => {
   it("shows features that are not built yet as disabled, not as links", () => {
     render(<AppSidebar />);
 
-    expect(screen.queryByRole("link", { name: /Công việc/ })).not.toBeInTheDocument();
-    expect(screen.getByText("Công việc").closest("[aria-disabled]")).toHaveAttribute(
+    expect(screen.queryByRole("link", { name: /Nhắc nhở/ })).not.toBeInTheDocument();
+    expect(screen.getByText("Nhắc nhở").closest("[aria-disabled]")).toHaveAttribute(
       "aria-disabled",
       "true",
     );
@@ -34,6 +34,7 @@ describe("AppSidebar", () => {
       "href",
       "/schedule",
     );
+    expect(screen.getByRole("link", { name: "Công việc" })).toHaveAttribute("href", "/tasks");
   });
 
   it("has a sign-out button that submits a form", () => {
