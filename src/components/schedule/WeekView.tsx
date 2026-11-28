@@ -2,6 +2,7 @@ import { getEventsBetween, getUserTimezone } from "@/lib/data/events";
 import { buildWeekLayout } from "@/lib/schedule/weekLayout";
 import { addDays, isDateKey, startOfDayInZone, startOfWeek, toDateKey } from "@/lib/utils/date";
 
+import { AddEventButton } from "./AddEventButton";
 import { WeekAgenda } from "./WeekAgenda";
 import { WeekGrid } from "./WeekGrid";
 import { WeekNav } from "./WeekNav";
@@ -23,10 +24,17 @@ export async function WeekView({ week }: WeekViewProps) {
     startOfDayInZone(addDays(weekStart, 7), timeZone),
   );
   const layout = buildWeekLayout(events, weekStart, timeZone);
+  const isCurrentWeek = weekStart === startOfWeek(todayKey);
 
   return (
     <div className="flex flex-col gap-4">
-      <WeekNav weekStart={weekStart} isCurrentWeek={weekStart === startOfWeek(todayKey)} />
+      <div className="flex flex-wrap items-center gap-3">
+        <div className="min-w-0 flex-1">
+          <WeekNav weekStart={weekStart} isCurrentWeek={isCurrentWeek} />
+        </div>
+        {/* New events default to today, or to Monday when viewing another week. */}
+        <AddEventButton defaultDate={isCurrentWeek ? todayKey : weekStart} />
+      </div>
 
       {events.length === 0 && (
         <p className="rounded-xl border border-dashed border-brand-200 bg-brand-50/50 px-4 py-3 text-sm text-brand-700">
