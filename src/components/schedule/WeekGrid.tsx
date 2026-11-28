@@ -4,6 +4,7 @@ import { formatDayMonth, formatMinutes, weekdayLabel } from "@/lib/utils/date";
 import { Icon } from "@/components/ui/Icon";
 
 import { EditableEvent } from "./EditableEvent";
+import { withReminder } from "./eventLabel";
 import { EVENT_COLOR_CLASSES } from "./eventColors";
 
 type WeekGridProps = { layout: WeekLayout; todayKey: string; timeZone: string };
@@ -90,7 +91,7 @@ export function WeekGrid({ layout, todayKey, timeZone }: WeekGridProps) {
                   key={segment.event.id}
                   event={segment.event}
                   timeZone={timeZone}
-                  label={`Sửa lịch: ${segment.event.title}, ${time}`}
+                  label={withReminder(`Sửa lịch: ${segment.event.title}, ${time}`, segment.event)}
                   className={`absolute flex flex-col justify-start overflow-hidden rounded-lg border-l-4 px-2 py-1 text-xs leading-tight shadow-sm ${colors.block}`}
                   style={{
                     top: `${top}%`,
@@ -103,6 +104,9 @@ export function WeekGrid({ layout, todayKey, timeZone }: WeekGridProps) {
                     <span className="truncate">{segment.event.title}</span>
                     {segment.event.repeat_days && (
                       <Icon name="repeat" className="size-3 shrink-0 opacity-70" />
+                    )}
+                    {segment.event.remind_before_minutes !== null && (
+                      <Icon name="bell" className="size-3 shrink-0 opacity-70" />
                     )}
                   </span>
                   <span className="block w-full truncate tabular-nums opacity-80">{time}</span>

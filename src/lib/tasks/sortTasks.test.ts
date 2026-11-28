@@ -17,6 +17,7 @@ function task(overrides: Partial<Task>): Task {
     completed_at: null,
     // Each task is created one minute after the previous one.
     created_at: new Date(Date.UTC(2026, 10, 20, 0, nextId)).toISOString(),
+    remind_before_minutes: null,
     ...overrides,
   };
 }

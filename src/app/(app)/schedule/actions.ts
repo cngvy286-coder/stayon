@@ -32,6 +32,7 @@ async function readEventForm(formData: FormData) {
     // One checkbox per weekday, all named "repeatDays".
     repeatDays: formData.getAll("repeatDays").map(String).join(","),
     repeatUntil: String(formData.get("repeatUntil") ?? ""),
+    remindBefore: String(formData.get("remindBefore") ?? ""),
   };
 
   const parsed = eventFormSchema.safeParse(values);
@@ -45,7 +46,8 @@ async function readEventForm(formData: FormData) {
   }
 
   const timeZone = await getUserTimezone();
-  const { title, date, startTime, endTime, color, note, repeatDays, repeatUntil } = parsed.data;
+  const { title, date, startTime, endTime, color, note, repeatDays, repeatUntil, remindBefore } =
+    parsed.data;
   const row = {
     title,
     note,
@@ -55,6 +57,7 @@ async function readEventForm(formData: FormData) {
     // null for a one-off event, so turning repeat off clears an existing series.
     repeat_days: repeatDays,
     repeat_until: repeatUntil,
+    remind_before_minutes: remindBefore,
   };
   return { ok: true as const, row, values };
 }

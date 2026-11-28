@@ -3,6 +3,7 @@
 import { useCallback, useState } from "react";
 
 import { Icon } from "@/components/ui/Icon";
+import { reminderLabel } from "@/lib/reminders";
 import { dueLabel } from "@/lib/tasks/dueLabel";
 import { TASK_STATUSES, type Task, type TaskStatus } from "@/types/task";
 
@@ -28,6 +29,7 @@ export function TaskItem({ task, now, timeZone, onStatusChange }: TaskItemProps)
   const priority = PRIORITY_STYLES[task.priority];
   const due = task.due_at ? dueLabel(task.due_at, task.status, now, timeZone) : null;
   const done = task.status === "done";
+  const reminder = reminderLabel(task.remind_before_minutes);
 
   return (
     <li className="flex gap-3 rounded-xl border border-line bg-surface px-3 py-3 sm:px-4">
@@ -81,6 +83,12 @@ export function TaskItem({ task, now, timeZone, onStatusChange }: TaskItemProps)
             >
               {due.overdue && "Quá hạn · "}
               {due.text}
+            </span>
+          )}
+          {reminder && (
+            <span className="inline-flex items-center gap-1 text-ink-muted" title={reminder}>
+              <Icon name="bell" className="size-3.5" />
+              <span className="sr-only">{reminder}</span>
             </span>
           )}
           {task.note && <span className="min-w-0 truncate text-ink-muted">{task.note}</span>}

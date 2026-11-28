@@ -4,6 +4,7 @@ import { formatDayMonth, formatMinutes, weekdayLabel } from "@/lib/utils/date";
 import { Icon } from "@/components/ui/Icon";
 
 import { EditableEvent } from "./EditableEvent";
+import { withReminder } from "./eventLabel";
 import { EVENT_COLOR_CLASSES } from "./eventColors";
 
 type WeekAgendaProps = { layout: WeekLayout; todayKey: string; timeZone: string };
@@ -42,7 +43,10 @@ export function WeekAgenda({ layout, todayKey, timeZone }: WeekAgendaProps) {
                       <EditableEvent
                         event={segment.event}
                         timeZone={timeZone}
-                        label={`Sửa lịch: ${segment.event.title}, ${time}`}
+                        label={withReminder(
+                          `Sửa lịch: ${segment.event.title}, ${time}`,
+                          segment.event,
+                        )}
                         className="-mx-2 flex w-[calc(100%+1rem)] items-center gap-3 rounded-lg px-2 py-1.5 text-sm hover:bg-brand-50/60"
                       >
                         <span
@@ -52,6 +56,9 @@ export function WeekAgenda({ layout, todayKey, timeZone }: WeekAgendaProps) {
                         <span className="min-w-0 truncate font-medium">{segment.event.title}</span>
                         {segment.event.repeat_days && (
                           <Icon name="repeat" className="size-3.5 shrink-0 text-ink-muted" />
+                        )}
+                        {segment.event.remind_before_minutes !== null && (
+                          <Icon name="bell" className="size-3.5 shrink-0 text-ink-muted" />
                         )}
                       </EditableEvent>
                     </li>

@@ -52,6 +52,7 @@ describe("AddEventButton saving", () => {
     const formData = createEvent.mock.calls[0][1] as FormData;
     expect(formData.get("title")).toBe("Toán");
     expect(formData.get("date")).toBe("2026-11-25");
+    expect(formData.get("remindBefore")).toBe("");
   });
 
   it("pre-selects the weekday of the chosen date when repeat is turned on", async () => {
@@ -74,6 +75,23 @@ describe("AddEventButton saving", () => {
     const formData = createEvent.mock.calls[0][1] as FormData;
     expect(formData.get("repeat")).toBe("on");
     expect(formData.getAll("repeatDays")).toEqual(["3"]);
+  });
+});
+
+describe("AddEventButton reminder", () => {
+  it("sends the chosen reminder", async () => {
+    createEvent.mockResolvedValue({ status: "success" });
+    const user = userEvent.setup();
+    render(<AddEventButton defaultDate="2026-11-25" />);
+
+    await user.click(screen.getByRole("button", { name: "Thêm lịch" }));
+    expect(screen.getByLabelText("Nhắc trước")).toHaveValue("");
+    await user.type(screen.getByLabelText("Tên lịch"), "Họp nhóm");
+    await user.selectOptions(screen.getByLabelText("Nhắc trước"), "15");
+    await user.click(screen.getByRole("button", { name: "Lưu lịch" }));
+
+    await vi.waitFor(() => expect(createEvent).toHaveBeenCalled());
+    expect((createEvent.mock.calls[0][1] as FormData).get("remindBefore")).toBe("15");
   });
 });
 

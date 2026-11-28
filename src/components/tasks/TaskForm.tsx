@@ -6,6 +6,7 @@ import type { TaskFormState } from "@/app/(app)/tasks/actions";
 import { Alert } from "@/components/ui/Alert";
 import { Button } from "@/components/ui/Button";
 import { FormField } from "@/components/ui/FormField";
+import { ReminderSelect } from "@/components/ui/ReminderSelect";
 import type { TaskFormValues } from "@/lib/tasks/taskFormValues";
 import { TASK_PRIORITIES } from "@/types/task";
 
@@ -96,6 +97,13 @@ export function TaskForm({ action, initialValues, submitLabel, onCancel, onSaved
         </div>
         {errors?.priority && <p className="text-sm text-rose-600">{errors.priority}</p>}
       </fieldset>
+
+      <ReminderSelect
+        id="task-remind-before"
+        defaultValue={values?.remindBefore}
+        error={errors?.remindBefore}
+        hint="Tính từ hạn chót."
+      />
 
       <div className="flex flex-col gap-1.5">
         <label htmlFor="task-note" className="text-sm font-medium">

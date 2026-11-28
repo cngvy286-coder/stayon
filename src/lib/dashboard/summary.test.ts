@@ -24,6 +24,7 @@ function task(overrides: Partial<Task>): Task {
     priority: "medium",
     completed_at: null,
     created_at: vn("2026-11-20T08:00"),
+    remind_before_minutes: null,
     ...overrides,
   };
 }
@@ -39,6 +40,7 @@ function event(title: string, from: string, to: string): CalendarEvent {
     color: "teal",
     repeat_days: null,
     repeat_until: null,
+    remind_before_minutes: null,
   };
 }
 

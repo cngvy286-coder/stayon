@@ -19,7 +19,7 @@ export type TaskFormState = {
 
 export type TaskActionResult = { ok: true } | { ok: false; message: string };
 
-const FIELDS = ["title", "note", "dueDate", "dueTime", "priority"] as const;
+const FIELDS = ["title", "note", "dueDate", "dueTime", "priority", "remindBefore"] as const;
 const NOT_FOUND = "Không tìm thấy việc này. Có thể việc đã bị xóa.";
 
 /**
@@ -42,11 +42,12 @@ async function readTaskForm(formData: FormData) {
   }
 
   const timeZone = await getUserTimezone();
-  const { title, note, priority, due } = parsed.data;
+  const { title, note, priority, due, remindBefore } = parsed.data;
   const row = {
     title,
     note,
     priority,
+    remind_before_minutes: remindBefore,
     due_at: due
       ? zonedTimeToUtc(due.date, parseTimeToMinutes(due.time), timeZone).toISOString()
       : null,

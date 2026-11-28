@@ -1,5 +1,6 @@
 import { z } from "zod";
 
+import { remindBeforeField } from "@/lib/reminders";
 import { isDateKey } from "@/lib/utils/date";
 import { TASK_PRIORITIES, TASK_STATUSES } from "@/types/task";
 
@@ -36,6 +37,7 @@ export const taskFormSchema = z
         "Giờ không hợp lệ.",
       ),
     priority: z.enum(TASK_PRIORITIES, "Vui lòng chọn độ ưu tiên."),
+    remindBefore: remindBeforeField,
   })
   .superRefine((data, ctx) => {
     if (data.dueTime !== "" && data.dueDate === "") {
@@ -43,6 +45,14 @@ export const taskFormSchema = z
         code: "custom",
         message: "Chọn ngày cho hạn chót (hoặc xóa giờ).",
         path: ["dueDate"],
+      });
+    }
+    // A reminder counts back from the deadline, so it needs one.
+    if (data.remindBefore !== null && data.dueDate === "") {
+      ctx.addIssue({
+        code: "custom",
+        message: "Cần có hạn chót để nhắc. Chọn ngày hạn hoặc tắt nhắc.",
+        path: ["remindBefore"],
       });
     }
   })

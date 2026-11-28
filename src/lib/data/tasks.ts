@@ -2,7 +2,8 @@ import type { Task } from "@/types/task";
 
 import { requireUser } from "./events";
 
-const TASK_COLUMNS = "id, title, note, due_at, status, priority, completed_at, created_at";
+const TASK_COLUMNS =
+  "id, title, note, due_at, status, priority, completed_at, created_at, remind_before_minutes";
 const DONE_VISIBLE_DAYS = 7;
 
 /**

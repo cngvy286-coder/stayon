@@ -15,6 +15,7 @@ const task: Task = {
   priority: "high",
   completed_at: null,
   created_at: "2026-11-28T03:00:00.000Z",
+  remind_before_minutes: null,
 };
 
 describe("taskToFormValues", () => {
@@ -25,7 +26,12 @@ describe("taskToFormValues", () => {
       dueDate: "2026-11-29",
       dueTime: "17:00",
       priority: "high",
+      remindBefore: "",
     });
+  });
+
+  it("fills the reminder", () => {
+    expect(taskToFormValues({ ...task, remind_before_minutes: 60 }, VN).remindBefore).toBe("60");
   });
 
   it("uses the local date when it differs from the UTC date", () => {

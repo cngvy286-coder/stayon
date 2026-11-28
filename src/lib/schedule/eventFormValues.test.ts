@@ -15,6 +15,7 @@ const event: CalendarEvent = {
   color: "rose",
   repeat_days: null,
   repeat_until: null,
+  remind_before_minutes: null,
 };
 
 describe("eventToFormValues", () => {
@@ -29,8 +30,13 @@ describe("eventToFormValues", () => {
       repeat: "",
       repeatDays: "",
       repeatUntil: "",
+      remindBefore: "",
       spansDays: false,
     });
+  });
+
+  it("fills the reminder", () => {
+    expect(eventToFormValues({ ...event, remind_before_minutes: 15 }, VN).remindBefore).toBe("15");
   });
 
   it("fills a repeating occurrence with the series' first date and its repeat settings", () => {

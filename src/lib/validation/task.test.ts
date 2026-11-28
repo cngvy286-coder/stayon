@@ -23,6 +23,7 @@ describe("taskFormSchema", () => {
       note: null,
       priority: "high",
       due: { date: "2026-11-29", time: "17:00" },
+      remindBefore: null,
     });
   });
 
@@ -52,6 +53,16 @@ describe("taskFormSchema", () => {
       dueDate: "Ngày không hợp lệ.",
     });
     expect(errorsOf({ ...valid, dueTime: "24:00" })).toEqual({ dueTime: "Giờ không hợp lệ." });
+  });
+
+  it("stores a reminder when the task has a deadline", () => {
+    expect(taskFormSchema.parse({ ...valid, remindBefore: "60" }).remindBefore).toBe(60);
+  });
+
+  it("needs a deadline for a reminder", () => {
+    expect(errorsOf({ ...valid, dueDate: "", dueTime: "", remindBefore: "15" })).toEqual({
+      remindBefore: "Cần có hạn chót để nhắc. Chọn ngày hạn hoặc tắt nhắc.",
+    });
   });
 
   it("only allows the three priorities", () => {
