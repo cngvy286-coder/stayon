@@ -7,13 +7,35 @@ import {
   isDateKey,
   isValidTimeZone,
   minutesOfDay,
+  parseTimeToMinutes,
   startOfDayInZone,
   startOfWeek,
   toDateKey,
   weekdayLabel,
+  zonedTimeToUtc,
 } from "./date";
 
 const VN = "Asia/Ho_Chi_Minh"; // UTC+7, no daylight saving
+
+describe("zonedTimeToUtc", () => {
+  it("converts a Vietnam wall-clock time to UTC", () => {
+    // 10:00 in Vietnam = 03:00 UTC
+    expect(zonedTimeToUtc("2026-11-28", 600, VN).toISOString()).toBe("2026-11-28T03:00:00.000Z");
+    // 06:00 in Vietnam = 23:00 UTC the previous day
+    expect(zonedTimeToUtc("2026-11-28", 360, VN).toISOString()).toBe("2026-11-27T23:00:00.000Z");
+  });
+
+  it("uses the offset in force on that day (DST)", () => {
+    const NY = "America/New_York";
+    expect(zonedTimeToUtc("2026-07-01", 540, NY).toISOString()).toBe("2026-07-01T13:00:00.000Z");
+    expect(zonedTimeToUtc("2026-12-01", 540, NY).toISOString()).toBe("2026-12-01T14:00:00.000Z");
+  });
+
+  it("parses HH:mm into minutes", () => {
+    expect(parseTimeToMinutes("07:30")).toBe(450);
+    expect(parseTimeToMinutes("23:59")).toBe(1439);
+  });
+});
 const NY = "America/New_York"; // has daylight saving
 
 describe("calendar maths on date keys", () => {
