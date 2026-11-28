@@ -11,8 +11,8 @@ STAYON cho phép người dùng lập thời khóa biểu, đặt nhắc nhở, 
 | Tính năng | Mô tả | Trạng thái |
 |---|---|---|
 | Landing page & layout | Giao diện responsive, tiếng Việt | ✅ Xong |
-| Đăng ký / đăng nhập | Supabase Auth, bảo vệ route | ⏳ Đang làm |
-| Thời khóa biểu | Lịch tuần, sự kiện lặp lại | 📋 Kế hoạch |
+| Đăng ký / đăng nhập | Supabase Auth, xác nhận email, quên mật khẩu, bảo vệ route | ✅ Xong |
+| Thời khóa biểu | Lịch tuần, sự kiện lặp lại | ⏳ Đang làm |
 | Công việc & tiến độ | Danh sách task, % hoàn thành | 📋 Kế hoạch |
 | Nhắc nhở | Thông báo trên trình duyệt | 📋 Kế hoạch |
 | Chế độ tập trung | Chrome Extension chặn website theo khung giờ | 📋 Kế hoạch |
