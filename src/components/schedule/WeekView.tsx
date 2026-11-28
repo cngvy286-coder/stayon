@@ -1,3 +1,5 @@
+import { connection } from "next/server";
+
 import { getEventsForRange, getUserTimezone } from "@/lib/data/events";
 import { expandRecurringEvents } from "@/lib/schedule/recurrence";
 import { buildWeekLayout } from "@/lib/schedule/weekLayout";
@@ -15,6 +17,9 @@ type WeekViewProps = {
 
 /** Loads the user's events for one week and renders them (grid on desktop, list on mobile). */
 export async function WeekView({ week }: WeekViewProps) {
+  // Everything below depends on the current time and the signed-in user (Supabase checks token
+  // expiry with Date.now()), so never prerender it — not even during Partial Prefetching.
+  await connection();
   const timeZone = await getUserTimezone();
   const todayKey = toDateKey(new Date(), timeZone);
   const requested = typeof week === "string" && isDateKey(week) ? week : todayKey;
