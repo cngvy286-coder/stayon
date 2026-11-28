@@ -26,6 +26,7 @@ const report: Task = {
   priority: "high",
   completed_at: null,
   created_at: "2026-11-27T03:00:00.000Z",
+  remind_before_minutes: null,
 };
 const reading: Task = {
   ...report,
@@ -114,6 +115,16 @@ describe("TaskBoard status changes", () => {
   });
 });
 
+describe("TaskBoard reminders", () => {
+  it("shows a bell for a task with a reminder and pre-fills it when editing", async () => {
+    const user = renderBoard([{ ...report, remind_before_minutes: 60 }]);
+
+    expect(screen.getByText("Nhắc trước 1 giờ")).toBeInTheDocument();
+    await user.click(screen.getByRole("button", { name: "Sửa việc: Nộp báo cáo" }));
+    expect(screen.getByLabelText("Nhắc trước")).toHaveValue("60");
+  });
+});
+
 describe("TaskBoard edit and delete", () => {
   it("opens the edit form pre-filled in the user's timezone and saves by id", async () => {
     updateTask.mockResolvedValue({ status: "success" });
@@ -126,6 +137,7 @@ describe("TaskBoard edit and delete", () => {
     expect(screen.getByLabelText("Ngày")).toHaveValue("2026-11-29");
     expect(screen.getByLabelText("Giờ")).toHaveValue("17:00");
     expect(screen.getByRole("radio", { name: "Cao" })).toBeChecked();
+    expect(screen.getByLabelText("Nhắc trước")).toHaveValue("");
 
     await user.click(screen.getByRole("button", { name: "Lưu thay đổi" }));
 

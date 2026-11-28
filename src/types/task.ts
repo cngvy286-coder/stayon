@@ -16,4 +16,6 @@ export type Task = {
   priority: TaskPriority;
   completed_at: string | null;
   created_at: string;
+  /** Minutes before due_at to remind the user; null = no reminder. */
+  remind_before_minutes: number | null;
 };

@@ -1,5 +1,6 @@
 import { z } from "zod";
 
+import { remindBeforeField } from "@/lib/reminders";
 import { isDateKey, parseTimeToMinutes } from "@/lib/utils/date";
 import { EVENT_COLORS } from "@/types/event";
 
@@ -46,6 +47,7 @@ export const eventFormSchema = z
       .optional()
       .transform((value) => value ?? "")
       .refine((value) => value === "" || isDateKey(value), "Ngày không hợp lệ."),
+    remindBefore: remindBeforeField,
   })
   .superRefine((data, ctx) => {
     const timesValid =

@@ -1,3 +1,4 @@
+import { reminderToFormValue } from "@/lib/reminders";
 import { formatMinutes, minutesOfDay, toDateKey } from "@/lib/utils/date";
 import type { CalendarEvent, EventColor } from "@/types/event";
 
@@ -15,6 +16,8 @@ export type EventFormValues = {
   repeatDays: string;
   /** "YYYY-MM-DD" or "". */
   repeatUntil: string;
+  /** Minutes before as a string, or "" for no reminder. */
+  remindBefore: string;
 };
 
 /**
@@ -41,6 +44,7 @@ export function eventToFormValues(
     repeat: repeating ? "on" : "",
     repeatDays: repeating ? event.repeat_days!.join(",") : "",
     repeatUntil: event.repeat_until ?? "",
+    remindBefore: reminderToFormValue(event.remind_before_minutes),
     spansDays: toDateKey(end, timeZone) !== date,
   };
 }

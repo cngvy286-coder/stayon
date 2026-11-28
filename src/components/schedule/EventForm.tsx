@@ -6,6 +6,7 @@ import type { EventFormState } from "@/app/(app)/schedule/actions";
 import { Alert } from "@/components/ui/Alert";
 import { Button } from "@/components/ui/Button";
 import { FormField } from "@/components/ui/FormField";
+import { ReminderSelect } from "@/components/ui/ReminderSelect";
 import type { EventFormValues } from "@/lib/schedule/eventFormValues";
 import { EVENT_COLORS, type EventColor } from "@/types/event";
 
@@ -121,6 +122,13 @@ export function EventForm({
         defaultDays={values?.repeatDays}
         defaultUntil={values?.repeatUntil}
         errors={{ repeatDays: errors?.repeatDays, repeatUntil: errors?.repeatUntil }}
+      />
+
+      <ReminderSelect
+        id="event-remind-before"
+        defaultValue={values?.remindBefore}
+        error={errors?.remindBefore}
+        hint="Tính từ giờ bắt đầu; lịch lặp được nhắc ở mọi buổi."
       />
 
       <div className="flex flex-col gap-1.5">

@@ -23,6 +23,7 @@ const event: CalendarEvent = {
   color: "rose",
   repeat_days: null,
   repeat_until: null,
+  remind_before_minutes: null,
 };
 
 function renderEvent(overrides: Partial<CalendarEvent> = {}) {

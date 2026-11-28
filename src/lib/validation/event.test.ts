@@ -33,6 +33,15 @@ describe("eventFormSchema", () => {
       note: null,
       repeatDays: null,
       repeatUntil: null,
+      remindBefore: null,
+    });
+  });
+
+  it("stores the chosen reminder in minutes", () => {
+    expect(eventFormSchema.parse({ ...valid, remindBefore: "15" }).remindBefore).toBe(15);
+    expect(eventFormSchema.parse({ ...valid, remindBefore: "" }).remindBefore).toBeNull();
+    expect(errorsOf({ ...valid, remindBefore: "7" })).toEqual({
+      remindBefore: "Thời gian nhắc không hợp lệ.",
     });
   });
 

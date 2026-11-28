@@ -17,6 +17,8 @@ export type CalendarEvent = {
   repeat_days: number[] | null;
   /** Last local date (YYYY-MM-DD) of a repeating series; null = forever. */
   repeat_until: string | null;
+  /** Minutes before start_at to remind the user (every occurrence); null = no reminder. */
+  remind_before_minutes: number | null;
   /**
    * Set on a computed occurrence of a repeating event: the series' own first start/end.
    * start_at / end_at then hold this occurrence's times.

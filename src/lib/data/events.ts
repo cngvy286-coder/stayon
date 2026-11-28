@@ -9,7 +9,8 @@ import type { CalendarEvent } from "@/types/event";
  * and RLS in the database limits rows to that user.
  */
 
-const EVENT_COLUMNS = "id, title, note, start_at, end_at, color, repeat_days, repeat_until";
+const EVENT_COLUMNS =
+  "id, title, note, start_at, end_at, color, repeat_days, repeat_until, remind_before_minutes";
 
 /** Verify the signed-in user (JWT signature checked) or send them to /login. */
 export async function requireUser() {

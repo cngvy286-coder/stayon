@@ -1,3 +1,4 @@
+import { reminderToFormValue } from "@/lib/reminders";
 import { formatMinutes, minutesOfDay, toDateKey } from "@/lib/utils/date";
 import type { Task, TaskPriority } from "@/types/task";
 
@@ -10,6 +11,8 @@ export type TaskFormValues = {
   /** "HH:mm" or "". */
   dueTime: string;
   priority: TaskPriority;
+  /** Minutes before as a string, or "" for no reminder. */
+  remindBefore: string;
 };
 
 /** Turn a stored task (deadline in UTC) into the edit form's values in the user's timezone. */
@@ -21,5 +24,6 @@ export function taskToFormValues(task: Task, timeZone: string): TaskFormValues {
     dueDate: due ? toDateKey(due, timeZone) : "",
     dueTime: due ? formatMinutes(minutesOfDay(due, timeZone)) : "",
     priority: task.priority,
+    remindBefore: reminderToFormValue(task.remind_before_minutes),
   };
 }

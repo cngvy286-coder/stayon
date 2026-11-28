@@ -21,6 +21,7 @@ const overdue: Task = {
   priority: "high",
   completed_at: null,
   created_at: "2026-11-20T00:00:00.000Z",
+  remind_before_minutes: null,
 };
 
 const baseEvent: CalendarEvent = {
@@ -32,6 +33,7 @@ const baseEvent: CalendarEvent = {
   color: "teal",
   repeat_days: [6],
   repeat_until: null,
+  remind_before_minutes: null,
 };
 
 describe("TodayTasks", () => {

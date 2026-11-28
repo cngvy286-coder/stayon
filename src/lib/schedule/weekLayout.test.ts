@@ -19,6 +19,7 @@ function at(day: string, from: string, to: string, toDay = day): CalendarEvent {
     color: "brand",
     repeat_days: null,
     repeat_until: null,
+    remind_before_minutes: null,
   };
 }
 

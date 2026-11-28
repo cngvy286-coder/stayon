@@ -16,6 +16,7 @@ const series: CalendarEvent = {
   color: "teal",
   repeat_days: [1, 3], // T2, T4
   repeat_until: null,
+  remind_before_minutes: null,
 };
 
 const startsOf = (events: CalendarEvent[]) => events.map((event) => event.start_at);
