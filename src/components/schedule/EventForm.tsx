@@ -2,10 +2,11 @@
 
 import { useActionState, useEffect } from "react";
 
-import { createEvent, type EventFormState } from "@/app/(app)/schedule/actions";
+import type { EventFormState } from "@/app/(app)/schedule/actions";
 import { Alert } from "@/components/ui/Alert";
 import { Button } from "@/components/ui/Button";
 import { FormField } from "@/components/ui/FormField";
+import type { EventFormValues } from "@/lib/schedule/eventFormValues";
 import { EVENT_COLORS, type EventColor } from "@/types/event";
 
 import { EVENT_COLOR_CLASSES } from "./eventColors";
@@ -21,17 +22,27 @@ const COLOR_LABELS: Record<EventColor, string> = {
 const initialState: EventFormState = { status: "idle" };
 
 type EventFormProps = {
-  /** Date key (YYYY-MM-DD) pre-filled in the date field. */
-  defaultDate: string;
+  /** Server Action that saves the form (createEvent, or updateEvent bound to an id). */
+  action: (prev: EventFormState, formData: FormData) => Promise<EventFormState>;
+  /** Pre-filled values, e.g. the date for a new event or the whole event when editing. */
+  initialValues: Partial<EventFormValues>;
+  submitLabel: string;
   onCancel: () => void;
   /** Called once the event has been saved. */
   onSaved: () => void;
 };
 
-/** Form for creating an event; saved by the createEvent Server Action. */
-export function EventForm({ defaultDate, onCancel, onSaved }: EventFormProps) {
-  const [state, formAction, pending] = useActionState(createEvent, initialState);
-  const values = state.values;
+/** Event fields shared by the "Thêm lịch" and "Sửa lịch" forms. */
+export function EventForm({
+  action,
+  initialValues,
+  submitLabel,
+  onCancel,
+  onSaved,
+}: EventFormProps) {
+  const [state, formAction, pending] = useActionState(action, initialState);
+  // After an error, show what the user typed; otherwise the pre-filled values.
+  const values: Partial<Record<string, string>> = state.values ?? initialValues;
   const errors = state.fieldErrors;
   const selectedColor = values?.color ?? "brand";
 
@@ -58,7 +69,7 @@ export function EventForm({ defaultDate, onCancel, onSaved }: EventFormProps) {
         name="date"
         label="Ngày"
         type="date"
-        defaultValue={values?.date ?? defaultDate}
+        defaultValue={values?.date}
         error={errors?.date}
         required
       />
@@ -126,7 +137,7 @@ export function EventForm({ defaultDate, onCancel, onSaved }: EventFormProps) {
           Hủy
         </Button>
         <Button type="submit" disabled={pending}>
-          {pending ? "Đang lưu..." : "Lưu lịch"}
+          {pending ? "Đang lưu..." : submitLabel}
         </Button>
       </div>
     </form>

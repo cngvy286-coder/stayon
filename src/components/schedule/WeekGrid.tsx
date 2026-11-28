@@ -1,7 +1,10 @@
 import type { WeekLayout } from "@/lib/schedule/weekLayout";
 import { formatDayMonth, formatMinutes, weekdayLabel } from "@/lib/utils/date";
 
+import { EditableEvent } from "./EditableEvent";
 import { EVENT_COLOR_CLASSES } from "./eventColors";
+
+type WeekGridProps = { layout: WeekLayout; todayKey: string; timeZone: string };
 
 const HOUR_HEIGHT_REM = 3;
 
@@ -10,7 +13,7 @@ const HOUR_HEIGHT_REM = 3;
  * Event blocks are positioned with inline top/height/left/width because those values
  * are computed per event; everything else is styled with Tailwind classes.
  */
-export function WeekGrid({ layout, todayKey }: { layout: WeekLayout; todayKey: string }) {
+export function WeekGrid({ layout, todayKey, timeZone }: WeekGridProps) {
   const { startHour, endHour, days } = layout;
   const totalMinutes = (endHour - startHour) * 60;
   const hours = Array.from({ length: endHour - startHour }, (_, i) => startHour + i);
@@ -81,10 +84,12 @@ export function WeekGrid({ layout, todayKey }: { layout: WeekLayout; todayKey: s
               const time = `${formatMinutes(segment.startMin)} – ${formatMinutes(segment.endMin)}`;
 
               return (
-                <div
+                <EditableEvent
                   key={segment.event.id}
-                  title={`${segment.event.title} · ${time}`}
-                  className={`absolute overflow-hidden rounded-lg border-l-4 px-2 py-1 text-xs leading-tight shadow-sm ${colors.block}`}
+                  event={segment.event}
+                  timeZone={timeZone}
+                  label={`Sửa lịch: ${segment.event.title}, ${time}`}
+                  className={`absolute flex flex-col justify-start overflow-hidden rounded-lg border-l-4 px-2 py-1 text-xs leading-tight shadow-sm ${colors.block}`}
                   style={{
                     top: `${top}%`,
                     height: `max(${height}%, 1.5rem)`,
@@ -92,9 +97,9 @@ export function WeekGrid({ layout, todayKey }: { layout: WeekLayout; todayKey: s
                     width: `calc(${100 / segment.lanes}% - 4px)`,
                   }}
                 >
-                  <p className="truncate font-semibold">{segment.event.title}</p>
-                  <p className="truncate tabular-nums opacity-80">{time}</p>
-                </div>
+                  <span className="block w-full truncate font-semibold">{segment.event.title}</span>
+                  <span className="block w-full truncate tabular-nums opacity-80">{time}</span>
+                </EditableEvent>
               );
             })}
           </div>

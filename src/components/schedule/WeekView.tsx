@@ -43,10 +43,10 @@ export async function WeekView({ week }: WeekViewProps) {
       )}
 
       <div className="hidden md:block">
-        <WeekGrid layout={layout} todayKey={todayKey} />
+        <WeekGrid layout={layout} todayKey={todayKey} timeZone={timeZone} />
       </div>
       <div className="md:hidden">
-        <WeekAgenda layout={layout} todayKey={todayKey} />
+        <WeekAgenda layout={layout} todayKey={todayKey} timeZone={timeZone} />
       </div>
     </div>
   );
