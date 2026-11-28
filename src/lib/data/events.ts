@@ -11,7 +11,8 @@ import type { CalendarEvent } from "@/types/event";
 
 const EVENT_COLUMNS = "id, title, note, start_at, end_at, color, repeat_days, repeat_until";
 
-async function requireUser() {
+/** Verify the signed-in user (JWT signature checked) or send them to /login. */
+export async function requireUser() {
   const supabase = await createClient();
   const { data } = await supabase.auth.getClaims();
   const userId = data?.claims?.sub;
