@@ -5,7 +5,7 @@ import {
   reminderOptionLabel,
   reminderToFormValue,
   remindBeforeField,
-} from "./reminders";
+} from "./index";
 
 describe("reminder labels", () => {
   it("names each option", () => {
