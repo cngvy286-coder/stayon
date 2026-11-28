@@ -2,7 +2,9 @@ import { describe, expect, it } from "vitest";
 
 import {
   addDays,
+  formatLongDate,
   formatMinutes,
+  greetingFor,
   formatWeekRange,
   isDateKey,
   isValidTimeZone,
@@ -64,6 +66,20 @@ describe("calendar maths on date keys", () => {
     expect(isoWeekday("2026-11-29")).toBe(7);
     expect(isoWeekdayLabel(1)).toBe("T2");
     expect(isoWeekdayLabel(7)).toBe("CN");
+  });
+
+  it("formats a long Vietnamese date", () => {
+    expect(formatLongDate("2026-11-28")).toBe("Thứ Bảy, 28/11/2026");
+    expect(formatLongDate("2026-11-29")).toBe("Chủ nhật, 29/11/2026");
+  });
+
+  it("greets by the local time of day", () => {
+    const at = (hhmm: string) => new Date(`2026-11-28T${hhmm}:00+07:00`);
+    expect(greetingFor(at("07:00"), VN)).toBe("Chào buổi sáng");
+    expect(greetingFor(at("12:00"), VN)).toBe("Chào buổi trưa");
+    expect(greetingFor(at("15:30"), VN)).toBe("Chào buổi chiều");
+    expect(greetingFor(at("21:00"), VN)).toBe("Chào buổi tối");
+    expect(greetingFor(at("02:00"), VN)).toBe("Chào buổi tối");
   });
 
   it("labels weekdays in Vietnamese", () => {

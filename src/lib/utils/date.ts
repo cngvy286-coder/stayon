@@ -125,6 +125,23 @@ export function isoWeekdayLabel(isoDay: number): string {
   return WEEKDAY_LABELS[isoDay % 7];
 }
 
+const WEEKDAY_NAMES = ["Chủ nhật", "Thứ Hai", "Thứ Ba", "Thứ Tư", "Thứ Năm", "Thứ Sáu", "Thứ Bảy"];
+
+/** "Thứ Bảy, 28/11/2026" */
+export function formatLongDate(key: string): string {
+  const [year, month, day] = key.split("-");
+  return `${WEEKDAY_NAMES[keyToUtcDate(key).getUTCDay()]}, ${day}/${month}/${year}`;
+}
+
+/** Greeting for the local time of day: "Chào buổi sáng" / "trưa" / "chiều" / "tối". */
+export function greetingFor(instant: Date, timeZone: string): string {
+  const hour = Math.floor(minutesOfDay(instant, timeZone) / 60);
+  if (hour >= 4 && hour < 11) return "Chào buổi sáng";
+  if (hour >= 11 && hour < 13) return "Chào buổi trưa";
+  if (hour >= 13 && hour < 18) return "Chào buổi chiều";
+  return "Chào buổi tối";
+}
+
 /** "28/11" */
 export function formatDayMonth(key: string): string {
   const [, m, d] = key.split("-");
