@@ -89,12 +89,23 @@ export function startOfWeek(key: string): string {
   return addDays(key, weekday === 0 ? -6 : 1 - weekday);
 }
 
-/** The instant when `key` starts (local midnight) in `timeZone`. */
-export function startOfDayInZone(key: string, timeZone: string): Date {
-  const guess = keyToUtcDate(key).getTime();
+/** The instant shown as `minutes` after midnight on `key` by a wall clock in `timeZone`. */
+export function zonedTimeToUtc(key: string, minutes: number, timeZone: string): Date {
+  const guess = keyToUtcDate(key).getTime() + minutes * 60 * 1000;
   // Two passes so the result is right even on days when the offset changes (DST).
   const first = guess - timezoneOffsetMs(new Date(guess), timeZone);
   return new Date(guess - timezoneOffsetMs(new Date(first), timeZone));
+}
+
+/** The instant when `key` starts (local midnight) in `timeZone`. */
+export function startOfDayInZone(key: string, timeZone: string): Date {
+  return zonedTimeToUtc(key, 0, timeZone);
+}
+
+/** "07:30" -> 450 minutes since midnight. Assumes a valid HH:mm string. */
+export function parseTimeToMinutes(time: string): number {
+  const [hours, minutes] = time.split(":").map(Number);
+  return hours * 60 + minutes;
 }
 
 const WEEKDAY_LABELS = ["CN", "T2", "T3", "T4", "T5", "T6", "T7"];
