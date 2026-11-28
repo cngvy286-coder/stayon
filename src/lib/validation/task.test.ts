@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 
 import { firstFieldErrors } from "./auth";
-import { taskFormSchema } from "./task";
+import { taskFormSchema, taskIdSchema, taskStatusSchema } from "./task";
 
 const valid = {
   title: "  Nộp báo cáo  ",
@@ -58,5 +58,17 @@ describe("taskFormSchema", () => {
     expect(errorsOf({ ...valid, priority: "urgent" })).toEqual({
       priority: "Vui lòng chọn độ ưu tiên.",
     });
+  });
+});
+
+describe("taskIdSchema / taskStatusSchema", () => {
+  it("accepts a UUID and rejects anything else", () => {
+    expect(taskIdSchema.safeParse("8b0f6d4e-3c2a-4f1b-9a7e-1d2c3b4a5f60").success).toBe(true);
+    expect(taskIdSchema.safeParse("1 or 1=1").success).toBe(false);
+  });
+
+  it("only allows the three statuses", () => {
+    expect(taskStatusSchema.safeParse("doing").success).toBe(true);
+    expect(taskStatusSchema.safeParse("archived").success).toBe(false);
   });
 });

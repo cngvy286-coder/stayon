@@ -1,7 +1,7 @@
 import { z } from "zod";
 
 import { isDateKey } from "@/lib/utils/date";
-import { TASK_PRIORITIES } from "@/types/task";
+import { TASK_PRIORITIES, TASK_STATUSES } from "@/types/task";
 
 /** Time used when a deadline has a date but no time: end of that day. */
 export const DEFAULT_DUE_TIME = "23:59";
@@ -53,3 +53,8 @@ export const taskFormSchema = z
   }));
 
 export type TaskFormInput = z.infer<typeof taskFormSchema>;
+
+/** Task ids are UUIDs; checked before they reach a database query. */
+export const taskIdSchema = z.uuid();
+
+export const taskStatusSchema = z.enum(TASK_STATUSES);

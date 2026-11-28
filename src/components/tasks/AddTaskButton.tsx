@@ -2,6 +2,7 @@
 
 import { useCallback, useState } from "react";
 
+import { createTask } from "@/app/(app)/tasks/actions";
 import { Button } from "@/components/ui/Button";
 import { Icon } from "@/components/ui/Icon";
 import { Modal } from "@/components/ui/Modal";
@@ -20,7 +21,7 @@ export function AddTaskButton() {
         Thêm việc
       </Button>
       <Modal open={open} onClose={close} title="Thêm việc mới">
-        <TaskForm onCancel={close} onSaved={close} />
+        <TaskForm action={createTask} submitLabel="Lưu việc" onCancel={close} onSaved={close} />
       </Modal>
     </>
   );
