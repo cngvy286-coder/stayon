@@ -2,10 +2,11 @@
 
 import { useActionState, useEffect } from "react";
 
-import { createTask, type TaskFormState } from "@/app/(app)/tasks/actions";
+import type { TaskFormState } from "@/app/(app)/tasks/actions";
 import { Alert } from "@/components/ui/Alert";
 import { Button } from "@/components/ui/Button";
 import { FormField } from "@/components/ui/FormField";
+import type { TaskFormValues } from "@/lib/tasks/taskFormValues";
 import { TASK_PRIORITIES } from "@/types/task";
 
 import { PRIORITY_STYLES } from "./taskLabels";
@@ -13,15 +14,21 @@ import { PRIORITY_STYLES } from "./taskLabels";
 const initialState: TaskFormState = { status: "idle" };
 
 type TaskFormProps = {
+  /** Server Action that saves the form (createTask, or updateTask bound to an id). */
+  action: (prev: TaskFormState, formData: FormData) => Promise<TaskFormState>;
+  /** Pre-filled values when editing; omit for a new task. */
+  initialValues?: Partial<TaskFormValues>;
+  submitLabel: string;
   onCancel: () => void;
   /** Called once the task has been saved. */
   onSaved: () => void;
 };
 
-/** Form for creating a task; saved by the createTask Server Action. */
-export function TaskForm({ onCancel, onSaved }: TaskFormProps) {
-  const [state, formAction, pending] = useActionState(createTask, initialState);
-  const values = state.values;
+/** Task fields shared by the "Thêm việc" and "Sửa việc" forms. */
+export function TaskForm({ action, initialValues, submitLabel, onCancel, onSaved }: TaskFormProps) {
+  const [state, formAction, pending] = useActionState(action, initialState);
+  // After an error, show what the user typed; otherwise the pre-filled values.
+  const values: Partial<Record<string, string>> | undefined = state.values ?? initialValues;
   const errors = state.fieldErrors;
   const selectedPriority = values?.priority ?? "medium";
 
@@ -112,7 +119,7 @@ export function TaskForm({ onCancel, onSaved }: TaskFormProps) {
           Hủy
         </Button>
         <Button type="submit" disabled={pending}>
-          {pending ? "Đang lưu..." : "Lưu việc"}
+          {pending ? "Đang lưu..." : submitLabel}
         </Button>
       </div>
     </form>
