@@ -32,3 +32,6 @@ export const eventFormSchema = z
   );
 
 export type EventFormInput = z.infer<typeof eventFormSchema>;
+
+/** Event ids are UUIDs; checked before they reach a database query. */
+export const eventIdSchema = z.uuid();

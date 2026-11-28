@@ -1,7 +1,15 @@
 import { describe, expect, it } from "vitest";
 
 import { firstFieldErrors } from "./auth";
-import { eventFormSchema } from "./event";
+import { eventFormSchema, eventIdSchema } from "./event";
+
+describe("eventIdSchema", () => {
+  it("accepts a UUID and rejects anything else", () => {
+    expect(eventIdSchema.safeParse("8b0f6d4e-3c2a-4f1b-9a7e-1d2c3b4a5f60").success).toBe(true);
+    expect(eventIdSchema.safeParse("1 or 1=1").success).toBe(false);
+    expect(eventIdSchema.safeParse("").success).toBe(false);
+  });
+});
 
 const valid = {
   title: "  Toán cao cấp  ",

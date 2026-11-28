@@ -2,6 +2,7 @@
 
 import { useCallback, useState } from "react";
 
+import { createEvent } from "@/app/(app)/schedule/actions";
 import { Button } from "@/components/ui/Button";
 import { Icon } from "@/components/ui/Icon";
 import { Modal } from "@/components/ui/Modal";
@@ -20,7 +21,13 @@ export function AddEventButton({ defaultDate }: { defaultDate: string }) {
         Thêm lịch
       </Button>
       <Modal open={open} onClose={close} title="Thêm lịch mới">
-        <EventForm defaultDate={defaultDate} onCancel={close} onSaved={close} />
+        <EventForm
+          action={createEvent}
+          initialValues={{ date: defaultDate }}
+          submitLabel="Lưu lịch"
+          onCancel={close}
+          onSaved={close}
+        />
       </Modal>
     </>
   );

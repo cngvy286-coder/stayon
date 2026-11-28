@@ -1,10 +1,13 @@
 import type { WeekLayout } from "@/lib/schedule/weekLayout";
 import { formatDayMonth, formatMinutes, weekdayLabel } from "@/lib/utils/date";
 
+import { EditableEvent } from "./EditableEvent";
 import { EVENT_COLOR_CLASSES } from "./eventColors";
 
+type WeekAgendaProps = { layout: WeekLayout; todayKey: string; timeZone: string };
+
 /** Mobile week view: a list of days, each with its events in time order. */
-export function WeekAgenda({ layout, todayKey }: { layout: WeekLayout; todayKey: string }) {
+export function WeekAgenda({ layout, todayKey, timeZone }: WeekAgendaProps) {
   return (
     <ol className="flex flex-col gap-3">
       {layout.days.map((day) => {
@@ -30,17 +33,25 @@ export function WeekAgenda({ layout, todayKey }: { layout: WeekLayout; todayKey:
               <p className="mt-2 text-sm text-ink-muted">Không có lịch</p>
             ) : (
               <ul className="mt-3 flex flex-col gap-2">
-                {segments.map((segment) => (
-                  <li key={segment.event.id} className="flex items-center gap-3 text-sm">
-                    <span
-                      className={`size-2.5 shrink-0 rounded-full ${EVENT_COLOR_CLASSES[segment.event.color].dot}`}
-                    />
-                    <span className="w-24 shrink-0 text-ink-muted tabular-nums">
-                      {formatMinutes(segment.startMin)} – {formatMinutes(segment.endMin)}
-                    </span>
-                    <span className="min-w-0 truncate font-medium">{segment.event.title}</span>
-                  </li>
-                ))}
+                {segments.map((segment) => {
+                  const time = `${formatMinutes(segment.startMin)} – ${formatMinutes(segment.endMin)}`;
+                  return (
+                    <li key={segment.event.id}>
+                      <EditableEvent
+                        event={segment.event}
+                        timeZone={timeZone}
+                        label={`Sửa lịch: ${segment.event.title}, ${time}`}
+                        className="-mx-2 flex w-[calc(100%+1rem)] items-center gap-3 rounded-lg px-2 py-1.5 text-sm hover:bg-brand-50/60"
+                      >
+                        <span
+                          className={`size-2.5 shrink-0 rounded-full ${EVENT_COLOR_CLASSES[segment.event.color].dot}`}
+                        />
+                        <span className="w-24 shrink-0 text-ink-muted tabular-nums">{time}</span>
+                        <span className="min-w-0 truncate font-medium">{segment.event.title}</span>
+                      </EditableEvent>
+                    </li>
+                  );
+                })}
               </ul>
             )}
           </li>
